@@ -257,7 +257,7 @@ export default function Home() {
 
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
 
           <div className="bg-[#F3F4F6] px-5 py-3 rounded-2xl">
 
@@ -289,17 +289,38 @@ export default function Home() {
 
       {/* LAYOUT */}
 
-      <div className="grid grid-cols-[260px_1fr_420px] gap-5 h-[85vh]">
+      <div className="
+      grid
+      grid-cols-1
+      xl:grid-cols-[260px_1fr_420px]
+      gap-5
+      min-h-[85vh]
+      ">
 
         {/* SIDEBAR */}
 
-        <div className="bg-[#1F3A2E] text-white rounded-3xl p-5 shadow-xl overflow-y-auto">
+        <div className="
+        bg-[#1F3A2E]
+        text-white
+        rounded-3xl
+        p-5
+        shadow-xl
+        overflow-x-auto
+        xl:overflow-y-auto
+        ">
 
           <h2 className="text-2xl font-bold mb-6">
             Categorías
           </h2>
 
-          <div className="space-y-3">
+          <div className="
+          flex
+          xl:block
+          gap-3
+          overflow-x-auto
+          xl:overflow-visible
+          pb-2
+          ">
 
             {categorias.map((categoria) => (
 
@@ -313,7 +334,7 @@ export default function Home() {
                 }
 
                 className={`
-                  w-full text-left px-5 py-4 rounded-2xl transition-all duration-200 text-lg
+                  min-w-[180px] xl:w-full text-left px-5 py-4 rounded-2xl transition-all duration-200 text-lg
                   ${
                     categoriaSeleccionada ===
                     categoria
@@ -351,7 +372,13 @@ export default function Home() {
 
           </div>
 
-          <div className="grid grid-cols-3 gap-5">
+          <div className="
+          grid
+          grid-cols-2
+          md:grid-cols-3
+          xl:grid-cols-3
+          gap-4
+          ">
 
             {productosFiltrados.map(
               (productoData) => (
@@ -407,9 +434,17 @@ export default function Home() {
 
         {/* CARRITO */}
 
-        <div className="bg-white rounded-3xl shadow-xl p-5 flex flex-col">
+        <div className="
+        bg-white
+        rounded-3xl
+        shadow-xl
+        p-5
+        flex
+        flex-col
+        min-h-[500px]
+        ">
 
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
 
             <h2 className="text-3xl font-black text-[#1F3A2E]">
               Carrito
@@ -558,7 +593,7 @@ export default function Home() {
 
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 
-          <div className="bg-white p-8 rounded-3xl w-[500px] shadow-2xl">
+          <div className="bg-white p-8 rounded-3xl w-full max-w-[500px] shadow-2xl">
 
             <h2 className="text-4xl font-black mb-6 text-[#1F3A2E]">
               Cobrar
@@ -627,7 +662,7 @@ export default function Home() {
 
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 
-          <div className="bg-white p-8 rounded-3xl w-[500px] shadow-2xl">
+          <div className="bg-white p-8 rounded-3xl w-full max-w-[500px] shadow-2xl">
 
             <div id="ticket-print">
 
