@@ -41,10 +41,6 @@ export default function Home() {
     setTicketActual] =
     useState<any>(null)
 
-  const [sidebarExpandido,
-    setSidebarExpandido] =
-    useState(false)
-
   useEffect(() => {
     obtenerVentas()
     obtenerProductos()
@@ -247,11 +243,19 @@ export default function Home() {
 
       <div
         className="
-          bg-white rounded-3xl shadow-md
+          bg-white
+          rounded-3xl
+          shadow-md
           px-4 md:px-8
-          py-5 mb-5
-          flex flex-col lg:flex-row
+          py-5
+          mb-5
+
+          flex
+          flex-col
+          lg:flex-row
+
           gap-4
+
           lg:items-center
           justify-between
         "
@@ -272,15 +276,36 @@ export default function Home() {
             Vivero San Fernando
           </h1>
 
-          <p className="text-gray-500 mt-1 text-sm md:text-base">
+          <p
+            className="
+              text-gray-500
+              mt-1
+              text-sm
+              md:text-base
+            "
+          >
             Sistema operativo del vivero
           </p>
 
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
+        <div
+          className="
+            flex
+            flex-wrap
+            items-center
+            gap-4
+          "
+        >
 
-          <div className="bg-[#F3F4F6] px-5 py-3 rounded-2xl">
+          <div
+            className="
+              bg-[#F3F4F6]
+              px-5
+              py-3
+              rounded-2xl
+            "
+          >
 
             <p className="text-sm text-gray-500">
               Ventas hoy
@@ -292,7 +317,15 @@ export default function Home() {
 
           </div>
 
-          <div className="bg-[#1F3A2E] text-white px-5 py-3 rounded-2xl">
+          <div
+            className="
+              bg-[#1F3A2E]
+              text-white
+              px-5
+              py-3
+              rounded-2xl
+            "
+          >
 
             <p className="text-sm opacity-70">
               Total actual
@@ -314,8 +347,8 @@ export default function Home() {
         className="
           grid
           grid-cols-1
-          lg:grid-cols-[auto_1fr]
-          xl:grid-cols-[auto_1fr_380px]
+          lg:grid-cols-[220px_1fr]
+          xl:grid-cols-[260px_1fr_380px]
           gap-5
           min-h-[85vh]
         "
@@ -324,77 +357,30 @@ export default function Home() {
         {/* SIDEBAR */}
 
         <div
-
-          onMouseEnter={() =>
-            setSidebarExpandido(true)
-          }
-
-          onMouseLeave={() =>
-            setSidebarExpandido(false)
-          }
-
-          className={`
+          className="
             bg-[#1F3A2E]
             text-white
             rounded-3xl
-            p-4
+            p-5
             shadow-xl
             overflow-hidden
-
-            transition-all
-            duration-300
-            ease-in-out
-
-            ${
-              sidebarExpandido
-                ? 'w-full lg:w-[220px]'
-                : 'w-full lg:w-[85px]'
-            }
-          `}
+          "
         >
 
-          <div
+          <h2
             className="
-              flex items-center
-              justify-between
+              text-2xl
+              font-bold
               mb-5
             "
           >
-
-            <h2
-              className={`
-                text-2xl
-                font-bold
-                whitespace-nowrap
-
-                transition-all
-                duration-200
-
-                ${
-                  sidebarExpandido
-                    ? 'opacity-100'
-                    : 'hidden lg:hidden'
-                }
-              `}
-            >
-              Categorías
-            </h2>
-
-            <div
-              className="
-                text-3xl
-                mx-auto
-                lg:mx-0
-              "
-            >
-              🌿
-            </div>
-
-          </div>
+            Categorías
+          </h2>
 
           <div
             className="
-              flex lg:block
+              flex
+              lg:block
               gap-3
               overflow-x-auto
               lg:overflow-visible
@@ -414,13 +400,13 @@ export default function Home() {
                 }
 
                 className={`
-                  flex items-center
-                  gap-3
-
                   min-w-fit
                   lg:w-full
 
-                  px-4
+                  text-left
+                  whitespace-nowrap
+
+                  px-5
                   py-4
 
                   rounded-2xl
@@ -428,7 +414,8 @@ export default function Home() {
                   transition-all
                   duration-200
 
-                  whitespace-nowrap
+                  text-base
+                  md:text-lg
 
                   ${
                     categoriaSeleccionada ===
@@ -439,24 +426,7 @@ export default function Home() {
                 `}
               >
 
-                <span className="text-xl">
-                  🌱
-                </span>
-
-                <span
-                  className={`
-                    transition-all
-                    duration-200
-
-                    ${
-                      sidebarExpandido
-                        ? 'opacity-100'
-                        : 'hidden lg:hidden'
-                    }
-                  `}
-                >
-                  {categoria}
-                </span>
+                {categoria}
 
               </button>
 
@@ -470,7 +440,15 @@ export default function Home() {
 
         <div className="overflow-y-auto">
 
-          <div className="bg-white rounded-3xl shadow-md p-5 mb-5">
+          <div
+            className="
+              bg-white
+              rounded-3xl
+              shadow-md
+              p-5
+              mb-5
+            "
+          >
 
             <input
               type="text"
@@ -615,7 +593,8 @@ export default function Home() {
             <div
               className="
                 bg-[#F3F4F6]
-                px-4 py-2
+                px-4
+                py-2
                 rounded-2xl
               "
             >
