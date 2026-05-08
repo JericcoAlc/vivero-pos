@@ -5,7 +5,8 @@ import { supabase } from '@/lib/supabase'
 
 export default function Home() {
 
-  const [ventas, setVentas] = useState<any[]>([])
+  const [ventas, setVentas] =
+    useState<any[]>([])
 
   const [productos, setProductos] =
     useState<any[]>([])
@@ -17,10 +18,8 @@ export default function Home() {
   const [busqueda, setBusqueda] =
     useState('')
 
-  const [producto, setProducto] = useState('')
-  const [cantidad, setCantidad] = useState(1)
-  const [precio, setPrecio] = useState('')
-  const [metodoPago, setMetodoPago] =
+  const [metodoPago,
+    setMetodoPago] =
     useState('efectivo')
 
   const [carrito, setCarrito] =
@@ -41,6 +40,10 @@ export default function Home() {
   const [ticketActual,
     setTicketActual] =
     useState<any>(null)
+
+  const [sidebarExpandido,
+    setSidebarExpandido] =
+    useState(false)
 
   useEffect(() => {
     obtenerVentas()
@@ -72,26 +75,21 @@ export default function Home() {
     }
   }
 
-  function agregarAlCarrito() {
-
-    if (!producto || !precio) return
+  function agregarProductoDirecto(
+    productoData: any
+  ) {
 
     const nuevoProducto = {
-      producto,
-      cantidad,
-      precio: Number(precio),
-      subtotal:
-        cantidad * Number(precio),
+      producto: productoData.nombre,
+      cantidad: 1,
+      precio: Number(productoData.precio),
+      subtotal: Number(productoData.precio),
     }
 
     setCarrito([
       ...carrito,
       nuevoProducto
     ])
-
-    setProducto('')
-    setCantidad(1)
-    setPrecio('')
   }
 
   function eliminarDelCarrito(
@@ -165,13 +163,15 @@ export default function Home() {
         },
       ])
 
-    const items = carrito.map((item) => ({
-      ticket,
-      producto: item.producto,
-      cantidad: item.cantidad,
-      precio: item.precio,
-      subtotal: item.subtotal,
-    }))
+    const items = carrito.map(
+      (item) => ({
+        ticket,
+        producto: item.producto,
+        cantidad: item.cantidad,
+        precio: item.precio,
+        subtotal: item.subtotal,
+      })
+    )
 
     await supabase
       .from('venta_items')
@@ -204,27 +204,29 @@ export default function Home() {
   ]
 
   const productosFiltrados =
-    productos.filter((producto: any) => {
+    productos.filter(
+      (producto: any) => {
 
-      const coincideCategoria =
-        categoriaSeleccionada ===
-        'Todos'
-        ||
-        producto.categoria ===
-        categoriaSeleccionada
+        const coincideCategoria =
+          categoriaSeleccionada ===
+          'Todos'
+          ||
+          producto.categoria ===
+          categoriaSeleccionada
 
-      const coincideBusqueda =
-        producto.nombre
-          .toLowerCase()
-          .includes(
-            busqueda.toLowerCase()
-          )
+        const coincideBusqueda =
+          producto.nombre
+            .toLowerCase()
+            .includes(
+              busqueda.toLowerCase()
+            )
 
-      return (
-        coincideCategoria &&
-        coincideBusqueda
-      )
-    })
+        return (
+          coincideCategoria &&
+          coincideBusqueda
+        )
+      }
+    )
 
   const totalGeneral =
     carrito.reduce(
@@ -239,19 +241,38 @@ export default function Home() {
 
   return (
 
-    <div className="bg-[#F8F9F4] min-h-screen text-[#1F2937] p-5">
+    <div className="bg-[#F8F9F4] min-h-screen text-[#1F2937] p-3 md:p-5">
 
       {/* HEADER */}
 
-      <div className="bg-white rounded-3xl shadow-md px-8 py-5 mb-5 flex items-center justify-between">
+      <div
+        className="
+          bg-white rounded-3xl shadow-md
+          px-4 md:px-8
+          py-5 mb-5
+          flex flex-col lg:flex-row
+          gap-4
+          lg:items-center
+          justify-between
+        "
+      >
 
         <div>
 
-          <h1 className="text-4xl font-black tracking-tight text-[#1F3A2E]">
-            Vivero San Fernando Control
+          <h1
+            className="
+              text-2xl
+              md:text-3xl
+              xl:text-4xl
+              font-black
+              tracking-tight
+              text-[#1F3A2E]
+            "
+          >
+            Vivero San Fernando
           </h1>
 
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 mt-1 text-sm md:text-base">
             Sistema operativo del vivero
           </p>
 
@@ -289,38 +310,97 @@ export default function Home() {
 
       {/* LAYOUT */}
 
-      <div className="
-      grid
-      grid-cols-1
-      xl:grid-cols-[260px_1fr_420px]
-      gap-5
-      min-h-[85vh]
-      ">
+      <div
+        className="
+          grid
+          grid-cols-1
+          lg:grid-cols-[auto_1fr]
+          xl:grid-cols-[auto_1fr_380px]
+          gap-5
+          min-h-[85vh]
+        "
+      >
 
         {/* SIDEBAR */}
 
-        <div className="
-        bg-[#1F3A2E]
-        text-white
-        rounded-3xl
-        p-5
-        shadow-xl
-        overflow-x-auto
-        xl:overflow-y-auto
-        ">
+        <div
 
-          <h2 className="text-2xl font-bold mb-6">
-            Categorías
-          </h2>
+          onMouseEnter={() =>
+            setSidebarExpandido(true)
+          }
 
-          <div className="
-          flex
-          xl:block
-          gap-3
-          overflow-x-auto
-          xl:overflow-visible
-          pb-2
-          ">
+          onMouseLeave={() =>
+            setSidebarExpandido(false)
+          }
+
+          className={`
+            bg-[#1F3A2E]
+            text-white
+            rounded-3xl
+            p-4
+            shadow-xl
+            overflow-hidden
+
+            transition-all
+            duration-300
+            ease-in-out
+
+            ${
+              sidebarExpandido
+                ? 'w-full lg:w-[220px]'
+                : 'w-full lg:w-[85px]'
+            }
+          `}
+        >
+
+          <div
+            className="
+              flex items-center
+              justify-between
+              mb-5
+            "
+          >
+
+            <h2
+              className={`
+                text-2xl
+                font-bold
+                whitespace-nowrap
+
+                transition-all
+                duration-200
+
+                ${
+                  sidebarExpandido
+                    ? 'opacity-100'
+                    : 'hidden lg:hidden'
+                }
+              `}
+            >
+              Categorías
+            </h2>
+
+            <div
+              className="
+                text-3xl
+                mx-auto
+                lg:mx-0
+              "
+            >
+              🌿
+            </div>
+
+          </div>
+
+          <div
+            className="
+              flex lg:block
+              gap-3
+              overflow-x-auto
+              lg:overflow-visible
+              pb-2
+            "
+          >
 
             {categorias.map((categoria) => (
 
@@ -334,7 +414,22 @@ export default function Home() {
                 }
 
                 className={`
-                  min-w-[180px] xl:w-full text-left px-5 py-4 rounded-2xl transition-all duration-200 text-lg
+                  flex items-center
+                  gap-3
+
+                  min-w-fit
+                  lg:w-full
+
+                  px-4
+                  py-4
+
+                  rounded-2xl
+
+                  transition-all
+                  duration-200
+
+                  whitespace-nowrap
+
                   ${
                     categoriaSeleccionada ===
                     categoria
@@ -344,7 +439,24 @@ export default function Home() {
                 `}
               >
 
-                {categoria}
+                <span className="text-xl">
+                  🌱
+                </span>
+
+                <span
+                  className={`
+                    transition-all
+                    duration-200
+
+                    ${
+                      sidebarExpandido
+                        ? 'opacity-100'
+                        : 'hidden lg:hidden'
+                    }
+                  `}
+                >
+                  {categoria}
+                </span>
 
               </button>
 
@@ -356,7 +468,7 @@ export default function Home() {
 
         {/* PRODUCTOS */}
 
-        <div className="overflow-y-auto pr-2">
+        <div className="overflow-y-auto">
 
           <div className="bg-white rounded-3xl shadow-md p-5 mb-5">
 
@@ -367,18 +479,29 @@ export default function Home() {
               onChange={(e) =>
                 setBusqueda(e.target.value)
               }
-              className="w-full bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-lg"
+              className="
+                w-full
+                bg-[#F3F4F6]
+                rounded-2xl
+                px-5
+                py-4
+                outline-none
+                text-base
+                md:text-lg
+              "
             />
 
           </div>
 
-          <div className="
-          grid
-          grid-cols-2
-          md:grid-cols-3
-          xl:grid-cols-3
-          gap-4
-          ">
+          <div
+            className="
+              grid
+              grid-cols-1
+              sm:grid-cols-2
+              xl:grid-cols-3
+              gap-4
+            "
+          >
 
             {productosFiltrados.map(
               (productoData) => (
@@ -386,33 +509,51 @@ export default function Home() {
               <button
                 key={productoData.id}
 
-                onClick={() => {
-
-                  setProducto(
-                    productoData.nombre
+                onClick={() =>
+                  agregarProductoDirecto(
+                    productoData
                   )
+                }
 
-                  setPrecio(
-                    productoData.precio
-                  )
-
-                  setCantidad(1)
-
-                  agregarAlCarrito()
-                }}
-
-                className="bg-white rounded-3xl p-5 shadow-md hover:shadow-2xl hover:scale-[1.02] transition-all duration-200 text-left"
+                className="
+                  bg-white
+                  rounded-3xl
+                  p-5
+                  shadow-md
+                  hover:shadow-2xl
+                  hover:scale-[1.02]
+                  transition-all
+                  duration-200
+                  text-left
+                "
               >
 
                 <div className="mb-4">
 
-                  <div className="w-14 h-14 rounded-2xl bg-[#A3B18A] flex items-center justify-center text-2xl">
+                  <div
+                    className="
+                      w-14 h-14
+                      rounded-2xl
+                      bg-[#A3B18A]
+                      flex
+                      items-center
+                      justify-center
+                      text-2xl
+                    "
+                  >
                     🌿
                   </div>
 
                 </div>
 
-                <p className="text-xl font-bold text-[#1F3A2E]">
+                <p
+                  className="
+                    text-lg
+                    md:text-xl
+                    font-bold
+                    text-[#1F3A2E]
+                  "
+                >
                   {productoData.nombre}
                 </p>
 
@@ -420,7 +561,14 @@ export default function Home() {
                   {productoData.categoria}
                 </p>
 
-                <p className="text-3xl font-black mt-5">
+                <p
+                  className="
+                    text-2xl
+                    md:text-3xl
+                    font-black
+                    mt-5
+                  "
+                >
                   ${productoData.precio}
                 </p>
 
@@ -434,23 +582,43 @@ export default function Home() {
 
         {/* CARRITO */}
 
-        <div className="
-        bg-white
-        rounded-3xl
-        shadow-xl
-        p-5
-        flex
-        flex-col
-        min-h-[500px]
-        ">
+        <div
+          className="
+            bg-white
+            rounded-3xl
+            shadow-xl
+            p-4 md:p-5
+            flex flex-col
+            w-full
+          "
+        >
 
-          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
+          <div
+            className="
+              flex items-center
+              justify-between
+              mb-6
+            "
+          >
 
-            <h2 className="text-3xl font-black text-[#1F3A2E]">
+            <h2
+              className="
+                text-2xl
+                md:text-3xl
+                font-black
+                text-[#1F3A2E]
+              "
+            >
               Carrito
             </h2>
 
-            <div className="bg-[#F3F4F6] px-4 py-2 rounded-2xl">
+            <div
+              className="
+                bg-[#F3F4F6]
+                px-4 py-2
+                rounded-2xl
+              "
+            >
 
               <p className="font-bold">
                 {carrito.length} items
@@ -460,20 +628,44 @@ export default function Home() {
 
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-4">
+          <div
+            className="
+              flex-1
+              overflow-y-auto
+              space-y-4
+            "
+          >
 
-            {carrito.map((item, index) => (
+            {carrito.map(
+              (item, index) => (
 
               <div
                 key={index}
-                className="bg-[#F8F9F4] rounded-3xl p-5"
+                className="
+                  bg-[#F8F9F4]
+                  rounded-3xl
+                  p-5
+                "
               >
 
-                <div className="flex items-start justify-between">
+                <div
+                  className="
+                    flex items-start
+                    justify-between
+                    gap-3
+                  "
+                >
 
                   <div>
 
-                    <p className="text-xl font-bold text-[#1F3A2E]">
+                    <p
+                      className="
+                        text-lg
+                        md:text-xl
+                        font-bold
+                        text-[#1F3A2E]
+                      "
+                    >
                       {item.producto}
                     </p>
 
@@ -487,22 +679,43 @@ export default function Home() {
                     onClick={() =>
                       eliminarDelCarrito(index)
                     }
-                    className="bg-red-100 text-red-500 px-3 py-2 rounded-xl"
+                    className="
+                      bg-red-100
+                      text-red-500
+                      px-3 py-2
+                      rounded-xl
+                    "
                   >
                     ✕
                   </button>
 
                 </div>
 
-                <div className="flex items-center justify-between mt-5">
+                <div
+                  className="
+                    flex items-center
+                    justify-between
+                    mt-5
+                  "
+                >
 
-                  <div className="flex items-center gap-3">
+                  <div
+                    className="
+                      flex items-center
+                      gap-3
+                    "
+                  >
 
                     <button
                       onClick={() =>
                         disminuirCantidad(index)
                       }
-                      className="w-10 h-10 rounded-xl bg-white shadow"
+                      className="
+                        w-10 h-10
+                        rounded-xl
+                        bg-white
+                        shadow
+                      "
                     >
                       -
                     </button>
@@ -515,14 +728,25 @@ export default function Home() {
                       onClick={() =>
                         aumentarCantidad(index)
                       }
-                      className="w-10 h-10 rounded-xl bg-white shadow"
+                      className="
+                        w-10 h-10
+                        rounded-xl
+                        bg-white
+                        shadow
+                      "
                     >
                       +
                     </button>
 
                   </div>
 
-                  <p className="text-2xl font-black text-[#1F3A2E]">
+                  <p
+                    className="
+                      text-2xl
+                      font-black
+                      text-[#1F3A2E]
+                    "
+                  >
                     ${item.subtotal}
                   </p>
 
@@ -543,7 +767,15 @@ export default function Home() {
                   e.target.value
                 )
               }
-              className="w-full bg-[#F3F4F6] rounded-2xl px-5 py-4 mb-5 outline-none"
+              className="
+                w-full
+                bg-[#F3F4F6]
+                rounded-2xl
+                px-5
+                py-4
+                mb-5
+                outline-none
+              "
             >
 
               <option value="efectivo">
@@ -560,13 +792,27 @@ export default function Home() {
 
             </select>
 
-            <div className="flex items-center justify-between mb-5">
+            <div
+              className="
+                flex items-center
+                justify-between
+                mb-5
+              "
+            >
 
               <p className="text-xl text-gray-500">
                 Total
               </p>
 
-              <p className="text-5xl font-black text-[#1F3A2E]">
+              <p
+                className="
+                  text-3xl
+                  md:text-4xl
+                  xl:text-5xl
+                  font-black
+                  text-[#1F3A2E]
+                "
+              >
                 ${totalGeneral}
               </p>
 
@@ -576,7 +822,19 @@ export default function Home() {
               onClick={() =>
                 setMostrarCobro(true)
               }
-              className="w-full bg-[#1F3A2E] hover:bg-[#2D4739] transition-all text-white py-5 rounded-3xl text-2xl font-black shadow-xl"
+              className="
+                w-full
+                bg-[#1F3A2E]
+                hover:bg-[#2D4739]
+                transition-all
+                text-white
+                py-5
+                rounded-3xl
+                text-xl
+                md:text-2xl
+                font-black
+                shadow-xl
+              "
             >
               COBRAR
             </button>
@@ -591,11 +849,37 @@ export default function Home() {
 
       {mostrarCobro && (
 
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div
+          className="
+            fixed inset-0
+            bg-black/40
+            flex items-center
+            justify-center
+            z-50
+            p-4
+          "
+        >
 
-          <div className="bg-white p-8 rounded-3xl w-full max-w-[500px] shadow-2xl">
+          <div
+            className="
+              bg-white
+              p-5 md:p-8
+              rounded-3xl
+              w-[95%]
+              md:w-[500px]
+              shadow-2xl
+            "
+          >
 
-            <h2 className="text-4xl font-black mb-6 text-[#1F3A2E]">
+            <h2
+              className="
+                text-3xl
+                md:text-4xl
+                font-black
+                mb-6
+                text-[#1F3A2E]
+              "
+            >
               Cobrar
             </h2>
 
@@ -612,23 +896,49 @@ export default function Home() {
                   e.target.value
                 )
               }
-              className="w-full bg-[#F3F4F6] rounded-2xl px-5 py-4 mb-5 outline-none"
+              className="
+                w-full
+                bg-[#F3F4F6]
+                rounded-2xl
+                px-5
+                py-4
+                mb-5
+                outline-none
+              "
             />
 
-            <p className="text-3xl font-black mb-6">
-
+            <p
+              className="
+                text-2xl
+                md:text-3xl
+                font-black
+                mb-6
+              "
+            >
               Cambio:
               ${cambio > 0 ? cambio : 0}
-
             </p>
 
-            <div className="flex gap-4">
+            <div
+              className="
+                flex
+                flex-col
+                md:flex-row
+                gap-4
+              "
+            >
 
               <button
                 onClick={() =>
                   setMostrarCobro(false)
                 }
-                className="w-full bg-gray-200 py-4 rounded-2xl font-bold"
+                className="
+                  w-full
+                  bg-gray-200
+                  py-4
+                  rounded-2xl
+                  font-bold
+                "
               >
                 Cancelar
               </button>
@@ -643,7 +953,14 @@ export default function Home() {
                   setDineroRecibido('')
 
                 }}
-                className="w-full bg-[#1F3A2E] text-white py-4 rounded-2xl font-bold"
+                className="
+                  w-full
+                  bg-[#1F3A2E]
+                  text-white
+                  py-4
+                  rounded-2xl
+                  font-bold
+                "
               >
                 Confirmar Cobro
               </button>
@@ -660,17 +977,50 @@ export default function Home() {
 
       {mostrarTicket && ticketActual && (
 
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div
+          className="
+            fixed inset-0
+            bg-black/40
+            flex items-center
+            justify-center
+            z-50
+            p-4
+          "
+        >
 
-          <div className="bg-white p-8 rounded-3xl w-full max-w-[500px] shadow-2xl">
+          <div
+            className="
+              bg-white
+              p-5 md:p-8
+              rounded-3xl
+              w-[95%]
+              md:w-[500px]
+              shadow-2xl
+            "
+          >
 
             <div id="ticket-print">
 
-              <h2 className="text-4xl font-black mb-2 text-center text-[#1F3A2E]">
+              <h2
+                className="
+                  text-3xl
+                  md:text-4xl
+                  font-black
+                  mb-2
+                  text-center
+                  text-[#1F3A2E]
+                "
+              >
                 Vivero San Fernando
               </h2>
 
-              <p className="text-center text-gray-500 mb-6">
+              <p
+                className="
+                  text-center
+                  text-gray-500
+                  mb-6
+                "
+              >
                 Ticket de compra
               </p>
 
@@ -687,11 +1037,18 @@ export default function Home() {
               <div className="space-y-3 mb-6">
 
                 {ticketActual.items.map(
-                  (item: any, index: number) => (
+                  (
+                    item: any,
+                    index: number
+                  ) => (
 
                   <div
                     key={index}
-                    className="flex justify-between border-b pb-2"
+                    className="
+                      flex justify-between
+                      border-b
+                      pb-2
+                    "
                   >
 
                     <div>
@@ -716,7 +1073,12 @@ export default function Home() {
 
               </div>
 
-              <div className="space-y-2 text-xl">
+              <div
+                className="
+                  space-y-2
+                  text-lg md:text-xl
+                "
+              >
 
                 <div className="flex justify-between">
 
@@ -752,13 +1114,29 @@ export default function Home() {
 
             </div>
 
-            <div className="flex gap-4 mt-8 print:hidden">
+            <div
+              className="
+                flex
+                flex-col
+                md:flex-row
+                gap-4
+                mt-8
+                print:hidden
+              "
+            >
 
               <button
                 onClick={() =>
                   window.print()
                 }
-                className="w-full bg-[#1F3A2E] text-white py-4 rounded-2xl font-bold"
+                className="
+                  w-full
+                  bg-[#1F3A2E]
+                  text-white
+                  py-4
+                  rounded-2xl
+                  font-bold
+                "
               >
                 Imprimir
               </button>
@@ -767,7 +1145,13 @@ export default function Home() {
                 onClick={() =>
                   setMostrarTicket(false)
                 }
-                className="w-full bg-gray-200 py-4 rounded-2xl font-bold"
+                className="
+                  w-full
+                  bg-gray-200
+                  py-4
+                  rounded-2xl
+                  font-bold
+                "
               >
                 Cerrar
               </button>
