@@ -37,9 +37,7 @@ export default function Tickets() {
     }
   }
 
-  /* =========================
-     FILTRO TIEMPO
-  ========================= */
+  /* FILTRO TIEMPO */
 
   const ventasFiltradasTiempo =
     useMemo(() => {
@@ -107,9 +105,7 @@ export default function Tickets() {
       filtroTiempo
     ])
 
-  /* =========================
-     FILTRO GENERAL
-  ========================= */
+  /* FILTRO GENERAL */
 
   const ticketsFiltrados =
     useMemo(() => {
@@ -157,9 +153,7 @@ export default function Tickets() {
       filtroMetodo
     ])
 
-  /* =========================
-     KPIs
-  ========================= */
+  /* KPIs */
 
   const ventasTotales =
     ticketsFiltrados.reduce(
@@ -212,19 +206,34 @@ export default function Tickets() {
 
   return (
 
-    <div className="bg-[#F8F9F4] min-h-screen p-6 text-[#1F2937]">
+    <div className="bg-[#F8F9F4] min-h-screen p-3 md:p-6 text-[#1F2937]">
 
       {/* HEADER */}
 
       <div className="mb-8">
 
-        <h1 className="text-5xl font-black text-[#1F3A2E]">
+        <h1
+          className="
+            text-3xl
+            md:text-4xl
+            xl:text-5xl
+            font-black
+            text-[#1F3A2E]
+          "
+        >
 
           Tickets
 
         </h1>
 
-        <p className="text-gray-500 mt-2 text-lg">
+        <p
+          className="
+            text-gray-500
+            mt-2
+            text-base
+            md:text-lg
+          "
+        >
 
           Historial completo de ventas
 
@@ -234,7 +243,16 @@ export default function Tickets() {
 
       {/* KPIs */}
 
-      <div className="grid grid-cols-4 gap-5 mb-8">
+      <div
+        className="
+          grid
+          grid-cols-1
+          sm:grid-cols-2
+          2xl:grid-cols-4
+          gap-5
+          mb-8
+        "
+      >
 
         <div className="bg-white rounded-3xl p-6 shadow-md">
 
@@ -244,7 +262,16 @@ export default function Tickets() {
 
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             $
             {ventasTotales.toFixed(0)}
@@ -261,7 +288,16 @@ export default function Tickets() {
 
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             {ticketsFiltrados.length}
 
@@ -277,7 +313,16 @@ export default function Tickets() {
 
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             $
             {ticketPromedio.toFixed(0)}
@@ -324,7 +369,14 @@ export default function Tickets() {
 
       <div className="bg-white rounded-3xl p-5 shadow-md mb-8">
 
-        <div className="grid grid-cols-3 gap-4">
+        <div
+          className="
+            grid
+            grid-cols-1
+            lg:grid-cols-3
+            gap-4
+          "
+        >
 
           {/* BUSCADOR */}
 
@@ -337,7 +389,15 @@ export default function Tickets() {
                 e.target.value
               )
             }
-            className="bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937] placeholder:text-gray-400"
+            className="
+              bg-[#F3F4F6]
+              rounded-2xl
+              px-5
+              py-4
+              outline-none
+              text-[#1F2937]
+              placeholder:text-gray-400
+            "
           />
 
           {/* MÉTODO */}
@@ -349,7 +409,14 @@ export default function Tickets() {
                 e.target.value
               )
             }
-            className="bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937]"
+            className="
+              bg-[#F3F4F6]
+              rounded-2xl
+              px-5
+              py-4
+              outline-none
+              text-[#1F2937]
+            "
           >
 
             <option value="todos">
@@ -370,6 +437,12 @@ export default function Tickets() {
 
             </option>
 
+            <option value="transferencia">
+
+              Transferencia
+
+            </option>
+
           </select>
 
           {/* TIEMPO */}
@@ -381,7 +454,14 @@ export default function Tickets() {
                 e.target.value
               )
             }
-            className="bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937]"
+            className="
+              bg-[#F3F4F6]
+              rounded-2xl
+              px-5
+              py-4
+              outline-none
+              text-[#1F2937]
+            "
           >
 
             <option value="todo">
@@ -422,136 +502,181 @@ export default function Tickets() {
 
       {/* TABLA */}
 
-      <div className="bg-white rounded-3xl shadow-md overflow-hidden">
+      <div
+        className="
+          bg-white
+          rounded-3xl
+          shadow-md
+          overflow-hidden
+        "
+      >
 
-        <table className="w-full">
+        <div className="overflow-x-auto">
 
-          <thead className="bg-[#1F3A2E] text-white">
+          <table className="w-full min-w-[900px]">
 
-            <tr>
+            <thead className="bg-[#1F3A2E] text-white">
 
-              <th className="text-left p-5">
+              <tr>
 
-                Ticket
+                <th className="text-left p-5">
 
-              </th>
+                  Ticket
 
-              <th className="text-left p-5">
+                </th>
 
-                Fecha
+                <th className="text-left p-5">
 
-              </th>
+                  Fecha
 
-              <th className="text-left p-5">
+                </th>
 
-                Hora
+                <th className="text-left p-5">
 
-              </th>
+                  Hora
 
-              <th className="text-left p-5">
+                </th>
 
-                Método
+                <th className="text-left p-5">
 
-              </th>
+                  Método
 
-              <th className="text-left p-5">
+                </th>
 
-                Total
+                <th className="text-left p-5">
 
-              </th>
+                  Total
 
-              <th className="text-left p-5">
+                </th>
 
-                Estado
+                <th className="text-left p-5">
 
-              </th>
+                  Estado
 
-            </tr>
+                </th>
 
-          </thead>
+              </tr>
 
-          <tbody className="text-[#1F2937]">
+            </thead>
 
-            {ticketsFiltrados.map(
-              (venta) => {
+            <tbody className="text-[#1F2937]">
 
-              const fecha =
-                new Date(
-                  venta.fecha
-                )
+              {ticketsFiltrados.map(
+                (venta) => {
 
-              return (
+                const fecha =
+                  new Date(
+                    venta.fecha
+                  )
 
-                <tr
-                  key={venta.ticket}
-                  className="border-b hover:bg-[#F8F9F4]"
-                >
+                return (
 
-                  <td className="p-5 font-bold">
+                  <tr
+                    key={venta.id}
+                    className="
+                      border-b
+                      hover:bg-[#F8F9F4]
+                    "
+                  >
 
-                    {venta.ticket}
+                    <td className="p-5 font-bold">
 
-                  </td>
+                      #{venta.ticket}
 
-                  <td className="p-5">
+                    </td>
 
-                    {
-                      fecha.toLocaleDateString()
-                    }
+                    <td className="p-5">
 
-                  </td>
+                      {fecha.toLocaleDateString()}
 
-                  <td className="p-5">
+                    </td>
 
-                    {
-                      fecha.toLocaleTimeString()
-                    }
+                    <td className="p-5">
 
-                  </td>
+                      {fecha.toLocaleTimeString()}
 
-                  <td className="p-5">
+                    </td>
 
-                    <div
-                      className={`
-                        px-4 py-2 rounded-xl font-bold inline-block
-                        ${
-                          venta.metodo_pago === 'efectivo'
-                            ? 'bg-green-100 text-green-600'
-                            : 'bg-blue-100 text-blue-600'
-                        }
-                      `}
-                    >
+                    <td className="p-5">
 
-                      {venta.metodo_pago}
+                      <div
+                        className={`
+                          px-4
+                          py-2
+                          rounded-xl
+                          font-bold
+                          w-fit
 
-                    </div>
+                          ${
+                            venta.metodo_pago ===
+                            'efectivo'
 
-                  </td>
+                              ?
 
-                  <td className="p-5 font-bold text-[#1F3A2E]">
+                              'bg-green-100 text-green-600'
 
-                    $
-                    {venta.total}
+                              :
 
-                  </td>
+                            venta.metodo_pago ===
+                            'tarjeta'
 
-                  <td className="p-5">
+                              ?
 
-                    <div className="bg-[#E8F5E9] text-[#2E7D32] px-4 py-2 rounded-xl font-bold inline-block">
+                              'bg-blue-100 text-blue-600'
 
-                      Completado
+                              :
 
-                    </div>
+                              'bg-yellow-100 text-yellow-700'
+                          }
+                        `}
+                      >
 
-                  </td>
+                        {venta.metodo_pago}
 
-                </tr>
+                      </div>
 
-              )})}
+                    </td>
 
-          </tbody>
+                    <td className="p-5 font-black text-[#1F3A2E]">
 
-        </table>
+                      $
+                      {Number(
+                        venta.total
+                      ).toFixed(0)}
+
+                    </td>
+
+                    <td className="p-5">
+
+                      <div
+                        className="
+                          bg-green-100
+                          text-green-600
+
+                          px-4
+                          py-2
+
+                          rounded-xl
+                          font-bold
+                          w-fit
+                        "
+                      >
+
+                        Completado
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+
+                )})}
+
+            </tbody>
+
+          </table>
+
+        </div>
 
       </div>
 

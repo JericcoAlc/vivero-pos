@@ -1,23 +1,25 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-
 import {
+
   ResponsiveContainer,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
+  CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid,
   BarChart,
   Bar,
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
+
 } from 'recharts'
 
-export default function Dashboard() {
+import { useEffect, useMemo, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
+export default function DashboardPage() {
 
   const [ventas, setVentas] =
     useState<any[]>([])
@@ -30,10 +32,12 @@ export default function Dashboard() {
     useState('mes')
 
   useEffect(() => {
-    obtenerData()
+
+    obtenerDatos()
+
   }, [])
 
-  async function obtenerData() {
+  async function obtenerDatos() {
 
     const { data: ventasData } =
       await supabase
@@ -54,10 +58,6 @@ export default function Dashboard() {
     }
   }
 
-  /* =========================================
-     FILTRO TIEMPO
-  ========================================= */
-
   const ventasFiltradas =
     useMemo(() => {
 
@@ -66,83 +66,48 @@ export default function Dashboard() {
       return ventas.filter((venta) => {
 
         const fecha =
-          new Date(venta.fecha)
+          new Date(venta.created_at)
 
-        if (
-          filtroTiempo === 'hoy'
-        ) {
+        const diff =
+          (ahora.getTime()
+            - fecha.getTime())
+          /
+          (1000 * 60 * 60 * 24)
 
-          return (
-            fecha.toDateString()
-            ===
-            ahora.toDateString()
-          )
+        switch (filtroTiempo) {
+
+          case 'hoy':
+            return diff <= 1
+
+          case 'semana':
+            return diff <= 7
+
+          case 'mes':
+            return diff <= 30
+
+          case 'año':
+            return diff <= 365
+
+          default:
+            return true
         }
-
-        if (
-          filtroTiempo === 'semana'
-        ) {
-
-          const hace7 =
-            new Date()
-
-          hace7.setDate(
-            ahora.getDate() - 7
-          )
-
-          return fecha >= hace7
-        }
-
-        if (
-          filtroTiempo === 'mes'
-        ) {
-
-          return (
-            fecha.getMonth()
-            ===
-            ahora.getMonth()
-          )
-        }
-
-        if (
-          filtroTiempo === 'anio'
-        ) {
-
-          return (
-            fecha.getFullYear()
-            ===
-            ahora.getFullYear()
-          )
-        }
-
-        return true
-
       })
 
-    }, [
-      ventas,
-      filtroTiempo
-    ])
-
-  /* =========================================
-     ITEMS FILTRADOS
-  ========================================= */
-
-  const ticketsFiltrados =
-    ventasFiltradas.map(
-      (venta) => venta.ticket
-    )
+    }, [ventas, filtroTiempo])
 
   const itemsFiltrados =
-    items.filter((item) =>
-      ticketsFiltrados.includes(
-        item.ticket
-      )
-    )
+    useMemo(() => {
 
-  /* =========================================
-     KPIs
-  ========================================= */
+      const tickets =
+        ventasFiltradas.map(
+          (v) => v.ticket
+        )
+
+      return items.filter((item) =>
+        tickets.includes(item.ticket)
+      )
+
+    }, [items, ventasFiltradas])
 
   const ventasTotales =
     ventasFiltradas.reduce(
@@ -156,255 +121,186 @@ export default function Dashboard() {
 
   const ticketPromedio =
     ticketsTotales > 0
-      ? ventasTotales / ticketsTotales
+      ? ventasTotales /
+        ticketsTotales
       : 0
 
-  /* =========================================
-     VENTAS POR DÍA
-  ========================================= */
-
   const ventasPorDia =
-    useMemo(() => {
-
-      const agrupadas: any = {}
-
-      ventasFiltradas.forEach((venta) => {
-
-        const fecha =
+    ventasFiltradas.map(
+      (venta) => ({
+        fecha:
           new Date(
-            venta.fecha
-          ).toLocaleDateString()
+            venta.created_at
+          ).toLocaleDateString(),
 
-        if (!agrupadas[fecha]) {
-          agrupadas[fecha] = 0
-        }
-
-        agrupadas[fecha] +=
-          Number(venta.total)
+        total:
+          Number(venta.total),
       })
+    )
 
-      return Object.entries(
-        agrupadas
-      ).map(([fecha, total]) => ({
-        fecha,
-        total,
-      }))
+  const metodosPago = [
 
-    }, [ventasFiltradas])
+    {
+      name: 'Efectivo',
 
-  /* =========================================
-     MÉTODOS PAGO
-  ========================================= */
+      value:
+        ventasFiltradas.filter(
+          (v) =>
+            v.metodo_pago ===
+            'efectivo'
+        ).length
+    },
 
-  const metodosPago =
-    useMemo(() => {
+    {
+      name: 'Tarjeta',
 
-      const agrupados: any = {}
+      value:
+        ventasFiltradas.filter(
+          (v) =>
+            v.metodo_pago ===
+            'tarjeta'
+        ).length
+    },
 
-      ventasFiltradas.forEach((venta) => {
+    {
+      name: 'Transferencia',
 
-        const metodo =
-          venta.metodo_pago
+      value:
+        ventasFiltradas.filter(
+          (v) =>
+            v.metodo_pago ===
+            'transferencia'
+        ).length
+    },
+  ]
 
-        if (!agrupados[metodo]) {
-          agrupados[metodo] = 0
-        }
+  const productosMap:
+    Record<string, number> = {}
 
-        agrupados[metodo] += 1
-      })
+  itemsFiltrados.forEach((item) => {
 
-      return Object.entries(
-        agrupados
-      ).map(([name, value]) => ({
-        name,
-        value,
-      }))
+    if (!productosMap[item.producto]) {
 
-    }, [ventasFiltradas])
+      productosMap[item.producto] = 0
+    }
 
-  /* =========================================
-     PRODUCTOS TOP
-  ========================================= */
+    productosMap[item.producto] +=
+      item.cantidad
+  })
 
   const productosTop =
-    useMemo(() => {
+    Object.entries(productosMap)
+      .map(([producto, cantidad]) => ({
 
-      const agrupados: any = {}
+        producto,
+        cantidad,
 
-      itemsFiltrados.forEach((item) => {
-
-        if (
-          !agrupados[item.producto]
-        ) {
-
-          agrupados[item.producto] = 0
-        }
-
-        agrupados[item.producto] +=
-          item.cantidad
-      })
-
-      return Object.entries(
-        agrupados
+      }))
+      .sort(
+        (a, b) =>
+          b.cantidad - a.cantidad
       )
-        .map(([producto, cantidad]) => ({
-          producto,
-          cantidad,
-        }))
-        .sort(
-          (a: any, b: any) =>
-            b.cantidad - a.cantidad
-        )
-        .slice(0, 5)
+      .slice(0, 5)
 
-    }, [itemsFiltrados])
+  const horasMap:
+    Record<string, number> = {}
 
-  /* =========================================
-     HORAS PICO
-  ========================================= */
+  ventasFiltradas.forEach((venta) => {
+
+    const hora =
+      new Date(
+        venta.created_at
+      ).getHours()
+
+    const horaTexto =
+      `${hora}:00`
+
+    if (!horasMap[horaTexto]) {
+
+      horasMap[horaTexto] = 0
+    }
+
+    horasMap[horaTexto] +=
+      Number(venta.total)
+  })
 
   const horasPico =
-    useMemo(() => {
+    Object.entries(horasMap)
+      .map(([hora, total]) => ({
 
-      const agrupadas: any = {}
-
-      ventasFiltradas.forEach((venta) => {
-
-        const hora =
-          new Date(
-            venta.fecha
-          ).getHours()
-
-        const label =
-          `${hora}:00`
-
-        if (!agrupadas[label]) {
-          agrupadas[label] = 0
-        }
-
-        agrupadas[label] +=
-          Number(venta.total)
-      })
-
-      return Object.entries(
-        agrupadas
-      ).map(([hora, total]) => ({
         hora,
         total,
+
       }))
 
-    }, [ventasFiltradas])
+  const insights = [
 
-  /* =========================================
-     SCORE NEGOCIO
-  ========================================= */
+    `El ticket promedio actual es de $${ticketPromedio.toFixed(2)}.`,
+
+    `Se han generado ${ticketsTotales} tickets en el periodo seleccionado.`,
+
+    `El producto más vendido es ${productosTop[0]?.producto || 'N/A'}.`,
+
+    `Las ventas totales acumuladas son de $${ventasTotales.toFixed(2)}.`,
+
+  ]
 
   const scoreNegocio =
     Math.min(
       100,
       Math.round(
         (
-          ventasTotales / 100 +
-          ticketPromedio
-        ) / 10
+          ventasTotales / 100
+        )
+        +
+        (
+          ticketsTotales * 2
+        )
       )
     )
 
-  /* =========================================
-     INSIGHTS
-  ========================================= */
-
-  const insights =
-    useMemo(() => {
-
-      const insights = []
-
-      if (
-        ventasTotales < 500
-      ) {
-
-        insights.push(
-          'Ventas bajas detectadas. Conviene lanzar promociones.'
-        )
-      }
-
-      if (
-        ticketPromedio > 1000
-      ) {
-
-        insights.push(
-          'El ticket promedio es alto. Hay potencial premium.'
-        )
-      }
-
-      if (
-        productosTop.length > 0
-      ) {
-
-        insights.push(
-          `${productosTop[0].producto} es el producto dominante actualmente.`
-        )
-      }
-
-      const tarjeta =
-        ventasFiltradas.filter(
-          (v) =>
-            v.metodo_pago ===
-            'tarjeta'
-        ).length
-
-      if (
-        tarjeta >
-        ventasFiltradas.length * 0.5
-      ) {
-
-        insights.push(
-          'La mayoría de clientes utilizan tarjeta.'
-        )
-      }
-
-      if (
-        horasPico.length > 0
-      ) {
-
-        const topHora =
-          [...horasPico].sort(
-            (a: any, b: any) =>
-              b.total - a.total
-          )[0]
-
-        insights.push(
-          `La hora más fuerte es ${topHora.hora}.`
-        )
-      }
-
-      return insights
-
-    }, [
-      ventasTotales,
-      ticketPromedio,
-      productosTop,
-      ventasFiltradas,
-      horasPico
-    ])
-
   return (
 
-    <div className="bg-[#F8F9F4] min-h-screen p-6">
+    <div className="bg-[#F8F9F4] min-h-screen p-3 md:p-6">
 
       {/* HEADER */}
 
-      <div className="flex items-center justify-between mb-8">
+      <div
+        className="
+          flex
+          flex-col
+          xl:flex-row
+          xl:items-center
+          justify-between
+          gap-5
+          mb-8
+        "
+      >
 
         <div>
 
-          <h1 className="text-5xl font-black text-[#1F3A2E]">
+          <h1
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              text-[#1F3A2E]
+            "
+          >
 
             Dashboard Inteligente
 
           </h1>
 
-          <p className="text-gray-500 mt-2 text-lg">
+          <p
+            className="
+              text-gray-500
+              mt-2
+              text-base
+              md:text-lg
+            "
+          >
 
             Analítica operativa del vivero
 
@@ -412,13 +308,30 @@ export default function Dashboard() {
 
         </div>
 
-        <div className="bg-[#1F3A2E] text-white rounded-3xl px-8 py-5 shadow-xl">
+        <div
+          className="
+            bg-[#1F3A2E]
+            text-white
+            rounded-3xl
+            px-5 md:px-8
+            py-5
+            shadow-xl
+            w-full
+            xl:w-auto
+          "
+        >
 
           <p className="opacity-70">
             Score Operativo
           </p>
 
-          <h2 className="text-5xl font-black">
+          <h2
+            className="
+              text-4xl
+              md:text-5xl
+              font-black
+            "
+          >
 
             {scoreNegocio}/100
 
@@ -430,7 +343,15 @@ export default function Dashboard() {
 
       {/* FILTROS */}
 
-      <div className="flex gap-3 mb-8">
+      <div
+        className="
+          flex
+          gap-3
+          mb-8
+          overflow-x-auto
+          pb-2
+        "
+      >
 
         {[
           'hoy',
@@ -450,7 +371,17 @@ export default function Dashboard() {
             }
 
             className={`
-              px-6 py-3 rounded-2xl font-bold capitalize transition-all border
+              min-w-fit
+              px-5
+              md:px-6
+              py-3
+              rounded-2xl
+              font-bold
+              capitalize
+              transition-all
+              border
+              whitespace-nowrap
+
               ${
                 filtroTiempo === filtro
                   ? 'bg-[#1F3A2E] text-white shadow-xl border-[#1F3A2E]'
@@ -469,7 +400,16 @@ export default function Dashboard() {
 
       {/* KPIs */}
 
-      <div className="grid grid-cols-4 gap-5 mb-8">
+      <div
+        className="
+          grid
+          grid-cols-1
+          sm:grid-cols-2
+          2xl:grid-cols-4
+          gap-5
+          mb-8
+        "
+      >
 
         <div className="bg-white rounded-3xl p-6 shadow-md">
 
@@ -477,7 +417,16 @@ export default function Dashboard() {
             Ventas Totales
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             ${ventasTotales}
 
@@ -491,7 +440,16 @@ export default function Dashboard() {
             Tickets
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             {ticketsTotales}
 
@@ -505,7 +463,16 @@ export default function Dashboard() {
             Ticket Promedio
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             $
             {ticketPromedio.toFixed(2)}
@@ -520,7 +487,16 @@ export default function Dashboard() {
             Productos Vendidos
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             {itemsFiltrados.length}
 
@@ -530,19 +506,38 @@ export default function Dashboard() {
 
       </div>
 
-      {/* GRÁFICAS */}
+      {/* GRAFICAS */}
 
-      <div className="grid grid-cols-2 gap-6 mb-8">
+      <div
+        className="
+          grid
+          grid-cols-1
+          2xl:grid-cols-2
+          gap-6
+          mb-8
+        "
+      >
 
-        <div className="bg-white rounded-3xl p-6 shadow-md">
+        <div className="bg-white rounded-3xl p-4 md:p-6 shadow-md">
 
-          <h2 className="text-2xl font-black mb-6 text-[#1F3A2E]">
+          <h2
+            className="
+              text-xl
+              md:text-2xl
+              font-black
+              mb-6
+              text-[#1F3A2E]
+            "
+          >
 
             Tendencia de Ventas
 
           </h2>
 
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer
+            width="100%"
+            height={320}
+          >
 
             <AreaChart data={ventasPorDia}>
 
@@ -594,15 +589,26 @@ export default function Dashboard() {
 
         </div>
 
-        <div className="bg-white rounded-3xl p-6 shadow-md">
+        <div className="bg-white rounded-3xl p-4 md:p-6 shadow-md">
 
-          <h2 className="text-2xl font-black mb-6 text-[#1F3A2E]">
+          <h2
+            className="
+              text-xl
+              md:text-2xl
+              font-black
+              mb-6
+              text-[#1F3A2E]
+            "
+          >
 
             Métodos de Pago
 
           </h2>
 
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer
+            width="100%"
+            height={320}
+          >
 
             <BarChart data={metodosPago}>
 
@@ -626,21 +632,26 @@ export default function Dashboard() {
 
         </div>
 
-      </div>
+        <div className="bg-white rounded-3xl p-4 md:p-6 shadow-md">
 
-      {/* SEGUNDA FILA */}
-
-      <div className="grid grid-cols-2 gap-6 mb-8">
-
-        <div className="bg-white rounded-3xl p-6 shadow-md">
-
-          <h2 className="text-2xl font-black mb-6 text-[#1F3A2E]">
+          <h2
+            className="
+              text-xl
+              md:text-2xl
+              font-black
+              mb-6
+              text-[#1F3A2E]
+            "
+          >
 
             Productos Más Vendidos
 
           </h2>
 
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer
+            width="100%"
+            height={320}
+          >
 
             <BarChart data={productosTop}>
 
@@ -664,15 +675,26 @@ export default function Dashboard() {
 
         </div>
 
-        <div className="bg-white rounded-3xl p-6 shadow-md">
+        <div className="bg-white rounded-3xl p-4 md:p-6 shadow-md">
 
-          <h2 className="text-2xl font-black mb-6 text-[#1F3A2E]">
+          <h2
+            className="
+              text-xl
+              md:text-2xl
+              font-black
+              mb-6
+              text-[#1F3A2E]
+            "
+          >
 
             Horas Pico
 
           </h2>
 
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer
+            width="100%"
+            height={320}
+          >
 
             <LineChart data={horasPico}>
 
@@ -701,9 +723,24 @@ export default function Dashboard() {
 
       {/* INSIGHTS */}
 
-      <div className="bg-white rounded-3xl p-8 shadow-xl">
+      <div
+        className="
+          bg-white
+          rounded-3xl
+          p-5 md:p-8
+          shadow-xl
+        "
+      >
 
-        <h2 className="text-3xl font-black text-[#1F3A2E] mb-6">
+        <h2
+          className="
+            text-2xl
+            md:text-3xl
+            font-black
+            mb-6
+            text-[#1F3A2E]
+          "
+        >
 
           Insights Inteligentes
 
@@ -711,15 +748,24 @@ export default function Dashboard() {
 
         <div className="space-y-4">
 
-          {insights.map(
-            (insight, index) => (
+          {insights?.map((insight, index) => (
 
             <div
               key={index}
-              className="bg-[#F8F9F4] border border-[#E5E7EB] rounded-2xl p-5"
+              className="
+                bg-[#F8F9F4]
+                rounded-2xl
+                p-4 md:p-5
+              "
             >
 
-              <p className="text-lg text-[#1F2937] font-medium">
+              <p
+                className="
+                  text-base
+                  md:text-lg
+                  font-medium
+                "
+              >
 
                 {insight}
 

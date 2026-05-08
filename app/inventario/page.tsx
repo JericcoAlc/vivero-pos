@@ -246,21 +246,46 @@ export default function Inventario() {
 
   return (
 
-    <div className="bg-[#F8F9F4] min-h-screen p-6 text-[#1F2937]">
+    <div className="bg-[#F8F9F4] min-h-screen p-3 md:p-6 text-[#1F2937]">
 
       {/* HEADER */}
 
-      <div className="flex items-center justify-between mb-8">
+      <div
+        className="
+          flex
+          flex-col
+          xl:flex-row
+          xl:items-center
+          justify-between
+          gap-5
+          mb-8
+        "
+      >
 
         <div>
 
-          <h1 className="text-5xl font-black text-[#1F3A2E]">
+          <h1
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              text-[#1F3A2E]
+            "
+          >
 
             Inventario
 
           </h1>
 
-          <p className="text-gray-500 mt-2 text-lg">
+          <p
+            className="
+              text-gray-500
+              mt-2
+              text-base
+              md:text-lg
+            "
+          >
 
             Gestión operativa del vivero
 
@@ -270,7 +295,27 @@ export default function Inventario() {
 
         <button
           onClick={abrirCrear}
-          className="bg-[#1F3A2E] hover:bg-[#2D4739] transition-all text-white px-8 py-4 rounded-2xl font-bold shadow-xl"
+
+          className="
+            bg-[#1F3A2E]
+            hover:bg-[#2D4739]
+
+            transition-all
+
+            text-white
+
+            px-6 md:px-8
+            py-4
+
+            rounded-2xl
+
+            font-bold
+
+            shadow-xl
+
+            w-full
+            md:w-auto
+          "
         >
 
           + Nuevo Producto
@@ -281,7 +326,16 @@ export default function Inventario() {
 
       {/* KPIs */}
 
-      <div className="grid grid-cols-4 gap-5 mb-8">
+      <div
+        className="
+          grid
+          grid-cols-1
+          sm:grid-cols-2
+          2xl:grid-cols-4
+          gap-5
+          mb-8
+        "
+      >
 
         <div className="bg-white rounded-3xl p-6 shadow-md">
 
@@ -289,7 +343,16 @@ export default function Inventario() {
             Productos
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             {productos.length}
 
@@ -303,7 +366,16 @@ export default function Inventario() {
             Categorías
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-[#1F3A2E]">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-[#1F3A2E]
+            "
+          >
 
             {categorias.length}
 
@@ -317,7 +389,16 @@ export default function Inventario() {
             Stock Bajo
           </p>
 
-          <h2 className="text-5xl font-black mt-3 text-red-500">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+              text-red-500
+            "
+          >
 
             {productosBajos.length}
 
@@ -331,7 +412,15 @@ export default function Inventario() {
             Valor Inventario
           </p>
 
-          <h2 className="text-4xl font-black mt-3">
+          <h2
+            className="
+              text-3xl
+              md:text-4xl
+              xl:text-5xl
+              font-black
+              mt-3
+            "
+          >
 
             $
             {valorInventario.toFixed(0)}
@@ -346,9 +435,26 @@ export default function Inventario() {
 
       {productosBajos.length > 0 && (
 
-        <div className="bg-red-100 border border-red-200 rounded-3xl p-6 mb-8">
+        <div
+          className="
+            bg-red-100
+            border
+            border-red-200
+            rounded-3xl
+            p-4 md:p-6
+            mb-8
+          "
+        >
 
-          <h2 className="text-2xl font-black text-red-600 mb-4">
+          <h2
+            className="
+              text-xl
+              md:text-2xl
+              font-black
+              text-red-600
+              mb-4
+            "
+          >
 
             Alertas de Stock
 
@@ -361,12 +467,32 @@ export default function Inventario() {
 
               <div
                 key={producto.id}
-                className="bg-white rounded-2xl p-4 flex items-center justify-between"
+
+                className="
+                  bg-white
+                  rounded-2xl
+                  p-4
+
+                  flex
+                  flex-col
+                  md:flex-row
+
+                  md:items-center
+                  justify-between
+
+                  gap-3
+                "
               >
 
                 <div>
 
-                  <p className="font-bold text-lg text-[#1F2937]">
+                  <p
+                    className="
+                      font-bold
+                      text-lg
+                      text-[#1F2937]
+                    "
+                  >
 
                     {producto.nombre}
 
@@ -380,7 +506,20 @@ export default function Inventario() {
 
                 </div>
 
-                <div className="bg-red-500 text-white px-4 py-2 rounded-xl font-bold">
+                <div
+                  className="
+                    bg-red-500
+                    text-white
+
+                    px-4
+                    py-2
+
+                    rounded-xl
+                    font-bold
+
+                    w-fit
+                  "
+                >
 
                   Stock:
                   {' '}
@@ -406,168 +545,217 @@ export default function Inventario() {
           type="text"
           placeholder="Buscar producto o categoría..."
           value={busqueda}
+
           onChange={(e) =>
             setBusqueda(
               e.target.value
             )
           }
-          className="w-full bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937] placeholder:text-gray-400"
+
+          className="
+            w-full
+            bg-[#F3F4F6]
+            rounded-2xl
+            px-5
+            py-4
+            outline-none
+            text-[#1F2937]
+            placeholder:text-gray-400
+          "
         />
 
       </div>
 
       {/* TABLA */}
 
-      <div className="bg-white rounded-3xl shadow-md overflow-hidden">
+      <div
+        className="
+          bg-white
+          rounded-3xl
+          shadow-md
+          overflow-hidden
+        "
+      >
 
-        <table className="w-full">
+        <div className="overflow-x-auto">
 
-          <thead className="bg-[#1F3A2E] text-white">
+          <table className="w-full min-w-[1000px]">
 
-            <tr>
+            <thead className="bg-[#1F3A2E] text-white">
 
-              <th className="text-left p-5">
-                Producto
-              </th>
+              <tr>
 
-              <th className="text-left p-5">
-                Categoría
-              </th>
+                <th className="text-left p-5">
+                  Producto
+                </th>
 
-              <th className="text-left p-5">
-                Precio
-              </th>
+                <th className="text-left p-5">
+                  Categoría
+                </th>
 
-              <th className="text-left p-5">
-                Costo
-              </th>
+                <th className="text-left p-5">
+                  Precio
+                </th>
 
-              <th className="text-left p-5">
-                Stock
-              </th>
+                <th className="text-left p-5">
+                  Costo
+                </th>
 
-              <th className="text-left p-5">
-                Ganancia
-              </th>
+                <th className="text-left p-5">
+                  Stock
+                </th>
 
-              <th className="text-left p-5">
-                Acciones
-              </th>
+                <th className="text-left p-5">
+                  Ganancia
+                </th>
 
-            </tr>
+                <th className="text-left p-5">
+                  Acciones
+                </th>
 
-          </thead>
+              </tr>
 
-          <tbody className="text-[#1F2937]">
+            </thead>
 
-            {productosFiltrados.map(
-              (producto) => {
+            <tbody className="text-[#1F2937]">
 
-              const ganancia =
-                Number(producto.precio)
-                -
-                Number(producto.costo || 0)
+              {productosFiltrados.map(
+                (producto) => {
 
-              return (
+                const ganancia =
+                  Number(producto.precio)
+                  -
+                  Number(producto.costo || 0)
 
-                <tr
-                  key={producto.id}
-                  className="border-b hover:bg-[#F8F9F4]"
-                >
+                return (
 
-                  <td className="p-5 font-semibold text-lg text-[#1F2937]">
+                  <tr
+                    key={producto.id}
+                    className="
+                      border-b
+                      hover:bg-[#F8F9F4]
+                    "
+                  >
 
-                    {producto.nombre}
+                    <td className="p-5 font-semibold text-lg">
 
-                  </td>
+                      {producto.nombre}
 
-                  <td className="p-5 text-[#1F2937]">
+                    </td>
 
-                    {producto.categoria}
+                    <td className="p-5">
 
-                  </td>
+                      {producto.categoria}
 
-                  <td className="p-5 font-bold text-[#1F2937]">
+                    </td>
 
-                    $
-                    {producto.precio}
+                    <td className="p-5 font-bold">
 
-                  </td>
+                      $
+                      {producto.precio}
 
-                  <td className="p-5 text-[#1F2937]">
+                    </td>
 
-                    $
-                    {producto.costo || 0}
+                    <td className="p-5">
 
-                  </td>
+                      $
+                      {producto.costo || 0}
 
-                  <td className="p-5">
+                    </td>
 
-                    <div
-                      className={`
-                        px-4 py-2 rounded-xl font-bold inline-block
-                        ${
-                          producto.stock <= 5
-                            ? 'bg-red-100 text-red-500'
-                            : 'bg-green-100 text-green-600'
-                        }
-                      `}
-                    >
+                    <td className="p-5">
 
-                      {producto.stock}
+                      <div
+                        className={`
+                          px-4
+                          py-2
+                          rounded-xl
+                          font-bold
+                          w-fit
 
-                    </div>
-
-                  </td>
-
-                  <td className="p-5 font-bold text-green-600">
-
-                    $
-                    {ganancia || 0 }
-
-                  </td>
-
-                  <td className="p-5">
-
-                    <div className="flex gap-3">
-
-                      <button
-                        onClick={() =>
-                          abrirEditar(
-                            producto
-                          )
-                        }
-                        className="bg-blue-100 text-blue-600 px-4 py-2 rounded-xl font-bold"
+                          ${
+                            producto.stock <= 5
+                              ? 'bg-red-100 text-red-500'
+                              : 'bg-green-100 text-green-600'
+                          }
+                        `}
                       >
 
-                        Editar
+                        {producto.stock}
 
-                      </button>
+                      </div>
 
-                      <button
-                        onClick={() =>
-                          eliminarProducto(
-                            producto.id
-                          )
-                        }
-                        className="bg-red-100 text-red-500 px-4 py-2 rounded-xl font-bold"
-                      >
+                    </td>
 
-                        Eliminar
+                    <td className="p-5 font-bold text-[#1F3A2E]">
 
-                      </button>
+                      ${ganancia}
 
-                    </div>
+                    </td>
 
-                  </td>
+                    <td className="p-5">
 
-                </tr>
+                      <div className="flex gap-3">
 
-              )})}
+                        <button
+                          onClick={() =>
+                            abrirEditar(
+                              producto
+                            )
+                          }
 
-          </tbody>
+                          className="
+                            bg-[#1F3A2E]
+                            text-white
 
-        </table>
+                            px-4
+                            py-2
+
+                            rounded-xl
+                            font-bold
+                          "
+                        >
+
+                          Editar
+
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            eliminarProducto(
+                              producto.id
+                            )
+                          }
+
+                          className="
+                            bg-red-100
+                            text-red-500
+
+                            px-4
+                            py-2
+
+                            rounded-xl
+                            font-bold
+                          "
+                        >
+
+                          Eliminar
+
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+
+                )})}
+
+            </tbody>
+
+          </table>
+
+        </div>
 
       </div>
 
@@ -575,11 +763,44 @@ export default function Inventario() {
 
       {mostrarModal && (
 
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div
+          className="
+            fixed inset-0
+            bg-black/40
 
-          <div className="bg-white w-[700px] rounded-3xl p-8 shadow-2xl">
+            flex
+            items-center
+            justify-center
 
-            <h2 className="text-4xl font-black text-[#1F3A2E] mb-8">
+            z-50
+            p-4
+          "
+        >
+
+          <div
+            className="
+              bg-white
+
+              w-[95%]
+              md:w-[700px]
+
+              rounded-3xl
+
+              p-5 md:p-8
+
+              shadow-2xl
+            "
+          >
+
+            <h2
+              className="
+                text-3xl
+                md:text-4xl
+                font-black
+                text-[#1F3A2E]
+                mb-8
+              "
+            >
 
               {
                 modoEdicion
@@ -589,75 +810,138 @@ export default function Inventario() {
 
             </h2>
 
-            <div className="grid grid-cols-2 gap-5">
+            <div
+              className="
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-5
+              "
+            >
 
               <input
                 type="text"
                 placeholder="Nombre"
                 value={nombre || ''}
+
                 onChange={(e) =>
                   setNombre(
                     e.target.value
                   )
                 }
-                className="bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937] placeholder:text-gray-400"
+
+                className="
+                  bg-[#F3F4F6]
+                  rounded-2xl
+                  px-5
+                  py-4
+                  outline-none
+                "
               />
 
               <input
                 type="text"
                 placeholder="Categoría"
                 value={categoria || ''}
+
                 onChange={(e) =>
                   setCategoria(
                     e.target.value
                   )
                 }
-                className="bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937] placeholder:text-gray-400"
+
+                className="
+                  bg-[#F3F4F6]
+                  rounded-2xl
+                  px-5
+                  py-4
+                  outline-none
+                "
               />
 
               <input
                 type="number"
                 placeholder="Precio venta"
                 value={precio || ''}
+
                 onChange={(e) =>
                   setPrecio(
                     e.target.value
                   )
                 }
-                className="bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937] placeholder:text-gray-400"
+
+                className="
+                  bg-[#F3F4F6]
+                  rounded-2xl
+                  px-5
+                  py-4
+                  outline-none
+                "
               />
 
               <input
                 type="number"
                 placeholder="Costo compra"
                 value={costo || ''}
+
                 onChange={(e) =>
                   setCosto(
                     e.target.value
                   )
                 }
-                className="bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937] placeholder:text-gray-400"
+
+                className="
+                  bg-[#F3F4F6]
+                  rounded-2xl
+                  px-5
+                  py-4
+                  outline-none
+                "
               />
 
               <input
                 type="number"
                 placeholder="Stock"
                 value={stock || ''}
+
                 onChange={(e) =>
                   setStock(
                     e.target.value
                   )
                 }
-                className="bg-[#F3F4F6] rounded-2xl px-5 py-4 outline-none text-[#1F2937] placeholder:text-gray-400"
+
+                className="
+                  bg-[#F3F4F6]
+                  rounded-2xl
+                  px-5
+                  py-4
+                  outline-none
+                "
               />
 
             </div>
 
-            <div className="flex gap-4 mt-8">
+            <div
+              className="
+                flex
+                flex-col
+                md:flex-row
+                gap-4
+                mt-8
+              "
+            >
 
               <button
                 onClick={cerrarModal}
-                className="w-full bg-gray-200 py-4 rounded-2xl font-bold text-[#1F2937]"
+
+                className="
+                  w-full
+                  bg-gray-200
+                  py-4
+                  rounded-2xl
+                  font-bold
+                  text-[#1F2937]
+                "
               >
 
                 Cancelar
@@ -670,7 +954,15 @@ export default function Inventario() {
                     ? editarProducto
                     : agregarProducto
                 }
-                className="w-full bg-[#1F3A2E] text-white py-4 rounded-2xl font-bold"
+
+                className="
+                  w-full
+                  bg-[#1F3A2E]
+                  text-white
+                  py-4
+                  rounded-2xl
+                  font-bold
+                "
               >
 
                 {
